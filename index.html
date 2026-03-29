@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Presentation | Shreya Sahu</title>
+    <style>
+        /* --- ENHANCED ECO-GREEN THEME --- */
+        :root {
+            --bg-color: #eef4f0; 
+            --text-main: #132a13; 
+            --text-muted: #31572c; 
+            --accent-green: #2d6a4f; 
+            --light-green: #d8f3dc; 
+            --vibrant-green: #40916c; 
+            --card-bg: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        
+        /* HIDE DEFAULT CURSOR EVERYWHERE */
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            overflow: hidden; 
+            width: 100vw; height: 100vh;
+            cursor: none !important; 
+        }
+
+        a, button, .ctrl-btn { cursor: none !important; }
+
+        /* --- CUSTOM CURSOR & INVERSION EFFECT --- */
+        .custom-cursor {
+            position: fixed; top: 0; left: 0; 
+            width: 15px; height: 15px; 
+            background-color: var(--accent-green); 
+            border-radius: 50%; 
+            pointer-events: none; 
+            z-index: 9999; 
+            transform: translate(-50%, -50%); 
+            mix-blend-mode: difference; 
+            transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        background-color 0.3s ease;
+            box-shadow: 0 0 10px rgba(45, 106, 79, 0.5);
+        }
+
+        /* Hover size reduced to 35px */
+        .custom-cursor.hover-active {
+            width: 35px; height: 35px;
+            background-color: #ffffff; 
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+        }
+
+        /* --- SLIDE CONTAINER --- */
+        #presentation-container {
+            position: relative; width: 100%; height: 100%;
+        }
+
+        .slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 4% 8%;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+            transform: translateY(20px);
+        }
+
+        .slide.active {
+            opacity: 1; visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* --- TYPOGRAPHY & LAYOUT --- */
+        .slide-title {
+            font-size: 2.8rem; font-weight: 800; color: var(--text-main);
+            margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px;
+            text-align: center; width: 100%;
+            border-bottom: 3px solid var(--vibrant-green); padding-bottom: 10px;
+        }
+
+        .content-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; max-width: 1300px;
+        }
+
+        .full-width { grid-column: 1 / -1; } 
+
+        .card {
+            background: var(--card-bg); padding: 30px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(45, 106, 79, 0.08);
+            border-left: 6px solid var(--accent-green);
+            transition: transform 0.3s ease;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(45, 106, 79, 0.15); }
+
+        .card h3 { color: var(--accent-green); font-size: 1.6rem; margin-bottom: 15px; }
+        .card p, .card li { color: var(--text-muted); font-size: 1.15rem; line-height: 1.6; margin-bottom: 12px; }
+        .card ul { margin-left: 20px; }
+
+        .big-data {
+            font-size: 3.8rem; font-weight: 900; color: var(--vibrant-green);
+            margin-bottom: 5px; line-height: 1; text-align: center;
+        }
+        .data-label { font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: bold; text-align: center;}
+        
+        .danger-text { color: #d00000; }
+
+        .title-slide h1 { font-size: 3.5rem; color: var(--text-main); margin-bottom: 30px; line-height: 1.2; text-align: center; text-transform: uppercase;}
+        
+        .student-details {
+            background: var(--card-bg); padding: 30px 50px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(45, 106, 79, 0.08); border-top: 6px solid var(--accent-green);
+            text-align: center; width: 80%; max-width: 800px; margin: 0 auto;
+        }
+        .student-details p { font-size: 1.2rem; margin-bottom: 10px; color: var(--text-muted); font-weight: 500;}
+        .student-details .highlight-text { color: var(--accent-green); font-weight: bold; font-size: 1.4rem;}
+
+        /* --- PROGRESS BAR & CONTROLS --- */
+        .progress-container {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 8px;
+            background: #d8e2dc; z-index: 100;
+        }
+        .progress-bar {
+            height: 100%; background: var(--vibrant-green); width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .controls {
+            position: fixed; bottom: 20px; right: 30px; z-index: 100;
+            display: flex; gap: 15px;
+        }
+        .ctrl-btn {
+            background: var(--card-bg); border: 2px solid var(--accent-green);
+            color: var(--accent-green); width: 45px; height: 45px;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            font-size: 1.2rem; font-weight: bold; transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn:hover { background: var(--accent-green); color: #fff; }
+        .slide-counter { position: fixed; bottom: 28px; left: 30px; font-weight: bold; color: var(--accent-green); font-size: 1.2rem; z-index: 100;}
+
+    </style>
+</head>
+<body>
+
+    <div class="custom-cursor" id="customCursor"></div>
+
+    <div id="presentation-container">
+
+        <section class="slide active title-slide">
+            <h1 class="interactive">Urbanization and Environmental Degradation in Kanpur City:<br>A Geographical Analysis</h1>
+            
+            <div class="student-details">
+                <p class="highlight-text interactive">Student: Shreya Sahu (M.A. 4th Semester)</p>
+                <p class="interactive">Roll No: 24028000922 &nbsp;|&nbsp; Enrollment: CSJMA24000064434</p>
+                <hr style="border: 1px solid var(--light-green); margin: 15px 0;">
+                <p class="interactive"><b>Supervisor:</b> Dr. Dharmendra, Assistant Professor</p>
+                <p class="interactive"><b>Department:</b> Geography, Pt. Prithi Nath P.G. College, Kanpur</p>
+            </div>
+        </section>
+
+        <section class="slide">
+            <h2 class="slide-title interactive">2. Concept of Urbanization</h2>
+            <div class="content-grid">
+                <div class="card">
+                    <h3 class="interactive">Definition</h3>
+                    <p class="interactive">A multifaceted process involving physical growth and the transition from rural-agrarian to industrial-modern living.</p>
+                    <h3 class="interactive" style="margin-top: 15px;">Key Concept</h3>
+                    <p class="interactive">Urbanization is a <b>"Double-Edged Sword"</b>—driving growth while straining natural ecosystems.</p>
+                </div>
+                <div class="card">
+                    <h3 class="interactive">Dimensions</h3>
+                    <ul>
+                        <li class="interactive"><b>Demographic:</b> Population size and density increase.</li>
+                        <li class="interactive"><b>Spatial:</b> Physical expansion and Urban Sprawl.</li>
+                        <li class="interactive"><b>Economic:</b> Growth of secondary and tertiary sectors.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <h2 class="slide-title interactive">3. Rationale & Objectives</h2>
+            <div class="content-grid">
+                <div class="card">
+                    <h3 class="interactive">Rationale & Primary Objective</h3>
+                    <p class="interactive"><b>Rationale:</b> To investigate why the "Manchester of the East" is now an environmental "Pollution Hotspot."</p>
+                    <p class="interactive"><b>Primary Objective:</b> To analyze the correlation between rapid physical expansion and ecological decay.</p>
+                </div>
+                <div class="card">
+                    <h3 class="interactive">Specific Goals</h3>
+                    <ul>
+                        <li class="interactive">To trace land-use changes and sprawl patterns.</li>
+                        <li class="interactive">To assess air, water, and soil pollution levels.</li>
+                        <li class="interactive">To evaluate the impact on public health.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <h2 class="slide-title interactive">4. Study Area: Kanpur Nagar</h2>
+            <div class="content-grid">
+                <div class="card">
+                    <h3 class="interactive">Setting</h3>
+                    <p class="interactive">Situated in the Ganga Basin; a vital node of the fertile Indo-Gangetic Plain.</p>
+                </div>
+                <div class="card">
+                    <h3 class="interactive">Key Zones Identified in Research</h3>
+                    <ul>
+                        <li class="interactive"><b>Industrial Clusters:</b> Jajmau (Tanneries) and Panki (Industrial).</li>
+                        <li class="interactive"><b>Residential Sprawl:</b> South (Barra/Naubasta) and West (Kalyanpur).</li>
+                        <li class="interactive"><b>Commercial Hubs:</b> Mall Road, Parade, and Govind Nagar.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <h2 class="slide-title interactive">5. Research Methodology</h2>
+            <div class="content-grid">
+                <div class="card">
+                    <h3 class="interactive">Research Design & Data</h3>
+                    <p class="interactive"><b>Design:</b> Analytical and Descriptive Geographical study.</p>
+                    <ul>
+                        <li class="interactive"><b>Primary Data:</b> Field survey via digital questionnaires (43 respondents).</li>
+                        <li class="interactive"><b>Secondary Data:</b> Census 2011, CPCB Reports, KDA Master Plan.</li>
+                    </ul>
+                </div>
+                <div class="card" style="align-items: center; text-align: center;">
+                    <h3 class="interactive">Sample Strength</h3>
+                    <div class="big-data interactive">76.7%</div>
+                    <p class="interactive">of respondents belong to the 18–30 age group.</p>
+                    <div class="data-label interactive">The Youth Stakeholder</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <h2 class="slide-title interactive">6. Findings: Urban Sprawl & Land Use</h2>
+            <div class="content-grid">
+                <div class="card">
+                    <h3 class="interactive">Horizontal Expansion & Micro-Climate</h3>
+                    <ul>
+                        <li class="interactive">Rapid conversion of green/open land into concrete built-up areas.</li>
+                        <li class="interactive">Formation of <b>"Urban Heat Islands" (UHI)</b> in high-density wards.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="interactive">Hydrological Stress</h3>
+                    <p class="interactive"><b>The "Impervious Surface" Phenomenon:</b> Concrete prevents rainwater infiltration.</p>
+                    <div class="big-data danger-text interactive" style="font-size: 3rem; margin-top: 15px;">0.67m / year</div>
+                    <div class="data-label interactive">Groundwater Depletion Recorded</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <h2 class="slide-title interactive">7. Environmental Degradation</h2>
+            <div class="content-grid">
+                <div class="card">
+                    <h3 class="interactive">Atmospheric Crisis</h3>
+                    <div class="big-data danger-text interactive" style="font-size: 3rem;">81.4%</div>
+                    <p class="interactive" style="text-align: center;">rate air as "Poor/Toxic."</p>
+                    <p class="interactive" style="text-align: center;">High PM10 from G.T. Road traffic and Panki.</p>
+                </div>
+                <div class="card">
+                    <h3 class="interactive">Hydrological Decay & Waste</h3>
+                    <ul>
+                        <li class="interactive"><b>88.4%</b> identify the Ganga as "Severely Polluted."</li>
+                        <li class="interactive"><b>Primary Causes:</b> Untreated sewage discharge and Chromium-laced tannery effluents (Jajmau).</li>
+                        <li class="interactive"><b>Waste:</b> 60% report open garbage dumps near residential areas.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <h2 class="slide-title interactive">8. Public Health as a Biological Indicator</h2>
+            <div class="content-grid">
+                <div class="card" style="text-align: center;">
+                    <h3 class="interactive">Respiratory Burden</h3>
+                    <div class="big-data danger-text interactive" style="font-size: 3.5rem;">74.4%</div>
+                    <p class="interactive">of respondents suffer from asthma, bronchitis, or persistent allergies.</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <h3 class="interactive">Water-Borne Risk</h3>
+                    <div class="big-data danger-text interactive" style="font-size: 3.5rem;">50%</div>
+                    <p class="interactive">experience annual episodes of typhoid or cholera.</p>
+                    <hr style="border: 1px solid var(--light-green); margin: 10px 0;">
+                    <p class="interactive"><b>Environmental Link:</b> Direct measurable connection between urban decay and declining quality of life.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <h2 class="slide-title interactive">9. Governance Loopholes</h2>
+            <div class="content-grid">
+                <div class="card full-width">
+                    <h3 class="interactive">Infrastructure Lag</h3>
+                    <p class="interactive">New housing developments are completed long before formal sewage/waste systems are ready.</p>
+                    
+                    <h3 class="interactive" style="margin-top: 20px;">Enforcement Gap</h3>
+                    <p class="interactive">Weak ground-level implementation of industrial bylaws.</p>
+
+                    <h3 class="interactive" style="margin-top: 20px;">Policy Shift Needed</h3>
+                    <p class="interactive">Moving from "Aesthetic Smart Cities" to <b>"Ecologically Resilient Cities."</b></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <h2 class="slide-title interactive">10. Sustainable Management Strategies</h2>
+            <div class="content-grid">
+                <div class="card">
+                    <h3 class="interactive">Green Buffers & Hydrology</h3>
+                    <ul>
+                        <li class="interactive"><b>Industrial Green Belts:</b> Massive afforestation around the Jajmau and Panki industrial clusters.</li>
+                        <li class="interactive"><b>Hydrological Recovery:</b> Mandatory Rainwater Harvesting (RWH) for all new building permits.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="interactive">Waste & Mobility</h3>
+                    <ul>
+                        <li class="interactive"><b>Circular Economy:</b> Ward-level decentralized STPs and strict source segregation of waste.</li>
+                        <li class="interactive"><b>Green Mobility:</b> Expanding Electric Vehicle (EV) public transport on transit corridors.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <h2 class="slide-title interactive">11. Conclusion</h2>
+            <div class="content-grid">
+                <div class="card full-width" style="text-align: center; padding: 50px 30px;">
+                    <h3 class="interactive" style="font-size: 2rem; margin-bottom: 20px;">Kanpur is at an ecological crossroads</h3>
+                    <p class="interactive" style="font-size: 1.4rem; margin-bottom: 20px;">"Unchecked Growth" is no longer sustainable. The city must balance its industrial heritage with an uncompromising commitment to environmental health.</p>
+                    <hr style="border: 1px solid var(--light-green); margin: 20px 0;">
+                    <p class="interactive" style="font-size: 1.5rem; color: var(--accent-green); font-weight: bold;">Final Statement: A "People-Oriented" model is the only path to a resilient future for Kanpur.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <h2 class="slide-title interactive">12. References & Acknowledgment</h2>
+            <div class="content-grid">
+                <div class="card full-width" style="text-align: center;">
+                    <h3 class="interactive">References</h3>
+                    <p class="interactive">Census 2011, CPCB, KDA Master Plan, NMCG, and Field Survey Data 2026.</p>
+                    
+                    <h3 class="interactive" style="margin-top: 40px;">Acknowledgment</h3>
+                    <p class="interactive" style="font-size: 1.4rem; color: var(--accent-green); font-weight: 500;">
+                        Heartfelt thanks to Dr. Dharmendra and the Department of Geography,<br>P.P.N. College.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="slide-counter interactive" id="slideCounter">1 / 12</div>
+    
+    <div class="controls">
+        <div class="ctrl-btn interactive" onclick="prevSlide()" title="Previous Slide">&#10094;</div>
+        <div class="ctrl-btn interactive" onclick="nextSlide()" title="Next Slide">&#10095;</div>
+    </div>
+
+    <script>
+        // --- CURSOR LOGIC ---
+        const cursor = document.getElementById('customCursor');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        const interactives = document.querySelectorAll('.interactive');
+        interactives.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover-active');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover-active');
+            });
+        });
+
+        // --- SLIDESHOW LOGIC ---
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progressBar');
+        const slideCounter = document.getElementById('slideCounter');
+        const totalSlides = 12;
+
+        function updatePresentation() {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide].classList.add('active');
+            
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            progressBar.style.width = progress + '%';
+            
+            slideCounter.innerText = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updatePresentation();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updatePresentation();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        updatePresentation();
+    </script>
+</body>
+</html>
